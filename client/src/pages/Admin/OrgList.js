@@ -22,7 +22,21 @@ const OrgList = () => {
     getDonars();
   }, []);
 
-  
+   //DELETE FUNCTION
+   const handelDelete = async (id) => {
+    try {
+      let answer = window.prompt(
+        "Are You SUre Want To Delete This Organisation",
+        "Sure"
+      );
+      if (!answer) return;
+      const { data } = await API.delete(`/admin/delete-donar/${id}`);
+      alert(data?.message);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Layout>
@@ -43,7 +57,14 @@ const OrgList = () => {
               <td>{record.email}</td>
               <td>{record.phone}</td>
               <td>{moment(record.createdAt).format("DD/MM/YYYY hh:mm A")}</td>
-            
+              <td>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handelDelete(record._id)}
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

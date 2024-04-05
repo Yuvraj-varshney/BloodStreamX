@@ -37,7 +37,15 @@ router.get("/org-list", authMiddelware, adminMiddleware, getOrgListController);
 router.post("/get-users",authMiddelware,getAllUsers);
 
 
+// ==========================
 
+// DELETE DONAR || GET
+router.delete(
+  "/delete-donar/:id",
+  authMiddelware,
+  adminMiddleware,
+  deleteDonarController
+);
 
 //EXPORT
 module.exports = router;
