@@ -33,8 +33,7 @@ router.get("/org-list", authMiddelware, adminMiddleware, getOrgListController);
 
 
 
-//get all users
-router.post("/get-users",authMiddelware,getAllUsers);
+
 
 
 // ==========================
