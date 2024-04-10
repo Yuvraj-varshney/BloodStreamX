@@ -1,5 +1,5 @@
 const userModel = require("../models/userModel");
-
+const sgMail = require('@sendgrid/mail');
 
 
 //GET DONAR LIST
@@ -47,6 +47,44 @@ const getHospitalListController = async (req, res) => {
   }
 };
 
+
+// Set up SendGrid API key
+sgMail.setApiKey(process.env.API_KEY);
+
+
+//get all users
+const getAllUsers = async (req,res) => {
+  try{
+    const { message } = req.body;  
+        // Fetch all users from the database
+        const users = await userModel
+        .find({role:["donar","hospital"]});
+      
+
+        // Iterate through users and send emails
+        users.forEach(async (user) => {
+          console.log("hello");
+          const msg = {
+            to: user.email,
+            from: 'yuvrajvarshney2021@gmail.com', // your verified sender email address on SendGrid
+            subject: 'Notification from Your App',
+            text: message // Use the message received from the frontend
+          };
+          await sgMail.send(msg);
+        });
+    
+        res.status(200).json({ message: 'Emails sent successfully' });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      message: "Error In users List API",
+      error,
+    });
+  }
+   
+};
 
 
 
@@ -103,5 +141,5 @@ module.exports = {
   getHospitalListController,
   getOrgListController,
   deleteDonarController,
-
+  getAllUsers
 };
