@@ -6,6 +6,9 @@ const {
   getOrgListController,
   deleteDonarController,
   getAllUsers,
+  fundDonate,
+  successCont,
+  cancelCont
 } = require("../controllers/adminController");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 
@@ -35,6 +38,11 @@ router.get("/org-list", authMiddelware, adminMiddleware, getOrgListController);
 
 //get all users
 router.post("/get-users",authMiddelware,getAllUsers);
+
+//fund raise
+router.post("/donate-money",fundDonate);
+router.post("/success",successCont);
+router.post("/cancel",cancelCont);
 
 
 

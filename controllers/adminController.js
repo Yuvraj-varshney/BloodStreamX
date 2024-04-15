@@ -1,6 +1,6 @@
 const userModel = require("../models/userModel");
 const sgMail = require('@sendgrid/mail');
-
+const paypal = require('paypal-rest-sdk');
 
 //GET DONAR LIST
 const getDonarsListController = async (req, res) => {
@@ -90,6 +90,88 @@ const getAllUsers = async (req,res) => {
 
 
 
+//for raising fund
+
+paypal.configure({
+  mode: 'sandbox', // Change it to 'live' for production
+  client_id: process.env.CLIENT_ID,
+  client_secret: process.env.CLIENT_SECRET
+});
+
+const fundDonate = async (req, res) => {
+
+  const { amount, currency, description } = req.body;
+
+  const paymentData = {
+    intent: 'sale',
+    payer: {
+      payment_method: 'paypal'
+    },
+    transactions: [{
+      amount: {
+        total: amount,
+        currency: currency
+      },
+      description: description
+    }],
+    redirect_urls: {
+      return_url: 'http://localhost:3000/success',
+      cancel_url: 'http://localhost:3000/cancel'
+    }
+  };
+
+  paypal.payment.create(paymentData, (error, payment) => {
+    if (error) {
+      console.error(error);
+      res.redirect('/cancel');
+    } else {
+      for (let link of payment.links) {
+        if (link.rel === 'approval_url') {
+          res.json({ redirect_url: link.href });
+        }
+      }
+    }
+  });
+
+
+
+
+};
+
+
+const successCont = async (req,res) => {
+  try{
+
+  } catch {
+
+  }
+};
+
+const cancelCont = async (req,res) => {
+  try {
+
+  } catch {
+
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,5 +223,8 @@ module.exports = {
   getHospitalListController,
   getOrgListController,
   deleteDonarController,
-  getAllUsers
+  getAllUsers,
+  fundDonate,
+  successCont,
+  cancelCont,
 };
